@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pegunungan di Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7fafc;
+        }
+        
+        .mountain-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mountain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+        
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn:hover {
+            background-color: #4299e1;
+            color: white;
+        }
+        
+        .filter-btn.active {
+            background-color: #2b6cb0;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Pegunungan di Indonesia</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Alam adalah sumber inspirasi tak terbatas, di mana gunung-gunung menjulang tinggi, hutan-hutan rimbun, dan lautan yang luas menyatu dalam harmoni yang sempurna.
+            </p>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="w-full md:w-1/2">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Cari pegunungan..." 
+                        class="search-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterMountains('all')" class="filter-btn active px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+                        Semua
+                    </button>
+                    <button onclick="filterMountains('jawa')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+                        Jawa
+                    </button>
+                    <button onclick="filterMountains('sumatra')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+                        Sumatra
+                    </button>
+                    <button onclick="filterMountains('sulawesi')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+                        Sulawesi
+                    </button>
+                    <button onclick="filterMountains('papua')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+                        Papua
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mountain List -->
+        <div id="mountainContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Mountain cards will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Mountain data with detailed information
+        const mountains = [
+            {
+                name: "Gunung Kerinci",
+                height: "3.805 mdpl",
+                location: "Sumatra",
+                description: "Gunung Kerinci bukan hanya sekadar gunung tertinggi di Sumatra, tetapi juga merupakan simbol keindahan alam Indonesia yang kaya. Dengan keanekaragaman hayati yang melimpah dan pemandangan yang menakjubkan, Gunung Kerinci menjadi destinasi yang wajib dikunjungi bagi para pecinta alam dan petualang.",
+                imageAlt: "Gunung Kerinci dengan puncak tinggi dan kawah berasap, dikelilingi hutan lebat di Sumatra"
+            },
+            {
+                name: "Gunung Semeru",
+                height: "3.676 mdpl",
+                location: "Jawa",
+                description: "Gunung Semeru adalah salah satu ikon alam Indonesia yang menawarkan keindahan dan tantangan bagi para pendaki. Dengan pemandangan yang menakjubkan, ekosistem yang kaya, dan statusnya sebagai gunung berapi aktif, Semeru menjadi destinasi yang wajib dikunjungi bagi siapa saja yang ingin merasakan keajaiban alam Indonesia.",
+                imageAlt: "Puncak Gunung Semeru dengan awan berarak di Jawa Timur, latar dengan danau Ranu Kumbolo"
+            },
+            {
+                name: "Gunung Rinjani",
+                height: "3.726 mdpl",
+                location: "Lombok",
+                description: "Gunung Rinjani adalah salah satu destinasi wisata alam yang paling menakjubkan di Indonesia. Dengan keindahan alam yang luar biasa, ekosistem yang kaya, dan tantangan pendakian yang menarik, Gunung Rinjani menjadi tempat yang wajib dikunjungi bagi para pecinta alam dan petualang. Keberadaan Danau Segara Anak dan pemandangan dari puncaknya menjadikan pengalaman di Rinjani tak terlupakan.",
+                imageAlt: "Gunung Rinjani dengan danau Segara Anak berwarna biru kehijauan di tengah kaldera"
+            },
+            {
+                name: "Gunung Bromo",
+                height: "2.329 mdpl",
+                location: "Jawa",
+                description: "Gunung Bromo adalah salah satu destinasi wisata alam yang paling ikonik di Indonesia. Dengan pemandangan yang menakjubkan, keindahan kawah yang aktif, dan nilai budaya yang kaya, Gunung Bromo menawarkan pengalaman yang tak terlupakan bagi para pengunjung. Keberadaan lautan pasir dan pemandangan matahari terbit yang spektakuler menjadikan Bromo sebagai tempat yang wajib dikunjungi bagi siapa saja yang ingin merasakan keajaiban alam Indonesia.",
+                imageAlt: "Gunung Bromo dengan asap tebal di kawahnya, lautan pasir dan bukit-bukit di sekitarnya"
+            },
+            {
+                name: "Gunung Jayawijaya",
+                height: "4.884 mdpl",
+                location: "Papua",
+                description: "Gunung Jayawijaya adalah salah satu destinasi wisata alam yang paling menakjubkan di Indonesia. Dengan puncaknya yang bersalju abadi, keindahan alam yang spektakuler, dan tantangan pendakian yang menarik, Jayawijaya menjadi tempat yang wajib dikunjungi bagi para pecinta alam dan petualang. Keberadaan flora dan fauna endemik serta budaya masyarakat lokal menjadikan pengalaman di Gunung Jayawijaya semakin kaya dan berkesan.",
+                imageAlt: "Puncak Jayawijaya berselimut salju putih dengan formasi batuan granit yang megah"
+            },
+            {
+                name: "Gunung Merapi",
+                height: "2.930 mdpl",
+                location: "Jawa",
+                description: "Gunung Merapi adalah salah satu ikon alam Indonesia yang menawarkan keindahan dan tantangan bagi para pendaki. Dengan aktivitas vulkanik yang menarik, pemandangan alam yang menakjubkan, dan nilai budaya yang kaya, Merapi menjadi destinasi yang wajib dikunjungi bagi siapa saja yang ingin merasakan keajaiban alam dan budaya di Pulau Jawa. Keberadaan gunung ini tidak hanya menjadi daya tarik wisata, tetapi juga menjadi simbol kekuatan alam yang harus dihormati.",
+                imageAlt: "Gunung Merapi mengeluarkan asap dari kawahnya dengan pemandangan perkampungan di bawahnya"
+            },
+            {
+                name: "Gunung Latimojong",
+                height: "3.478 mdpl",
+                location: "Sulawesi",
+                description: "Puncak tertinggi di Sulawesi dengan nama puncaknya Rante Mario.",
+                imageAlt: "Pegunungan Latimojong dengan lembah hijau dan formasi batuan yang unik"
+            },
+            {
+                name: "Gunung Lawu",
+                height: "3.265 mdpl",
+                location: "Jawa",
+                description: "Gunung dengan sejumlah situs dan mitos sejarah kerajaan Majapahit dan Mataram.",
+                imageAlt: "Gunung Lawu dengan lereng berhutan dan awan yang menyelimuti puncaknya"
+            },
+            {
+                name: "Gunung Binaiya",
+                height: "3.027 mdpl",
+                location: "Maluku",
+                description: "Gunung tertinggi di Kepulauan Maluku dengan ekosistem yang unik.",
+                imageAlt: "Puncak Gunung Binaiya dengan pemandangan hutan hujan tropis yang lebat"
+            }
+        ];
+
+        // Function to display mountains
+        function displayMountains(mountainsToDisplay = mountains) {
+            const container = document.getElementById('mountainContainer');
+            container.innerHTML = '';
+
+            mountainsToDisplay.forEach(mountain => {
+                const card = document.createElement('div');
+                card.className = 'mountain-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg';
+                
+                card.innerHTML = `
+                    <img 
+                        src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/893adadd-8a99-42bc-94dc-d1142c22c79c.png" 
+                        alt="${mountain.imageAlt}"
+                        class="w-full h-48 object-cover"
+                        onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c9ab6e9c-baf8-4b52-afd6-c70ac8891239.png'"
+                    />
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">${mountain.name}</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                ${mountain.height}
+                            </span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span>${mountain.location}</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">${mountain.description}</p>
+                        <button class="text-blue-600 font-medium hover:text-blue-800 transition-colors">
+                            Lihat Detail →
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Function to filter mountains by location
+        function filterMountains(location = 'all') {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(location)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (location === 'all') {
+                displayMountains();
+                return;
+            }
+
+            const filtered = mountains.filter(mountain => 
+                mountain.location.toLowerCase().includes(location)
+            );
+            displayMountains(filtered);
+        }
+
+        // Function to search mountains
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = mountains.filter(mountain => 
+                mountain.name.toLowerCase().includes(searchTerm) || 
+                mountain.description.toLowerCase().includes(searchTerm)
+            );
+            displayMountains(filtered);
+        });
+
+        // Initial display
+        document.addEventListener('DOMContentLoaded', () => {
+            displayMountains();
+        });
+    </script>
+</body>
+</html>
